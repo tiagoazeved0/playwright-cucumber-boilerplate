@@ -1,8 +1,3 @@
-You're right! It seems I missed a crucial detail. The cucumberReporter in your playwright.config.ts is configured to expect an external server running at http://127.0.0.1:8080/data to serve attachments (screenshots, videos, etc.).
-
-Here's the corrected README.md with the necessary steps to start that server and make the reporting work correctly:
-
-Markdown
 # Playwright BDD Project
 
 This project is a boilerplate for running end-to-end (E2E) tests using Playwright and Playwright-BDD. It provides a structured framework with Cucumber integration for writing tests in a behavior-driven development (BDD) style.
