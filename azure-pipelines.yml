@@ -16,16 +16,16 @@ jobs:
         displayName: Install Playwright Browsers
       - script: npm install -D playwright-bdd
         displayName: Install playwright-bdd
-      - script: npm run test
-        displayName: Run Playwright Tests
+      - script: |
+          npx playwright test --reporter=junit  # Generate JUnit XML report
+          npx playwright show-report
+        displayName: Run Tests and Show Report
       - task: PublishTestResults@2
         inputs:
           testResultsFiles: playwright-report/*.xml
           testRunTitle: Playwright Tests
-      - script: npm run report
-        displayName: Generate Cucumber Report
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: cucumber-report
-          artifact: cucumber-report
-        displayName: Publish Cucumber Report
+          targetPath: playwright-report
+          artifact: playwright-report
+        displayName: Publish Playwright Report

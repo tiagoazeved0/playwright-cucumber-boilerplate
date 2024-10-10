@@ -9,10 +9,9 @@ const testDir = defineBddConfig({
 export default defineConfig({
   testDir,
   reporter: [
-    cucumberReporter("html", {
-      outputFile: "cucumber-report/index.html",
-      externalAttachments: true,
-      attachmentsBaseURL: "http://127.0.0.1:8080/data",
+    cucumberReporter("junit", {
+      outputFile: "cucumber-report/report.xml",
+      suiteName: "My Suite",
     }),
   ],
   use: {
