@@ -27,10 +27,8 @@ jobs:
         displayName: List Workspace Files
       - task: PublishTestResults@2
         inputs:
-          testResultsFiles: $(Pipeline.Workspace)/playwright-report/*.xml
+          testResultsFiles: $(Pipeline.Workspace)/TestResults/*.xml
           testRunTitle: Playwright Tests
-      - script: pwd
-        displayName: Print Working Directory
       - task: PublishPipelineArtifact@1
         inputs:
           targetPath: playwright-report
