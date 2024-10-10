@@ -20,9 +20,11 @@ jobs:
           npx playwright test --reporter=junit
 
           npx playwright show-report playwright-report  # Specify report
-          directory 
+          directory
         displayName: Run Tests and Show Report
-        continueOnError: "true"
+        continueOnError: 'true'
+      - script: ls -l $(Pipeline.Workspace)
+        displayName: List Workspace Files
       - task: PublishTestResults@2
         inputs:
           testResultsFiles: $(Pipeline.Workspace)/playwright-report/*.xml
