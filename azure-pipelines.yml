@@ -1,43 +1,31 @@
-trigger:
-  - main
-pool:
-  vmImage: ubuntu-latest
-stages:
-  - stage: Install_and_Build
-    displayName: Install Dependencies and Build
-    jobs:
-      - job: Install
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: 18.x
-            displayName: Install Node.js
-          - script: npm ci
-            displayName: Install npm packages
-          - task: Cache@2
-            inputs:
-              key: npm | $(Agent.OS) | $(Build.BuildId) | package-lock.json
-              path: $(NPM_CACHE_FOLDER)
-              restoreKeys: |
-                npm | $(Agent.OS) | $(Build.BuildId)
-          - script: npx playwright install --with-deps
-            displayName: Install Playwright Browsers
-          - script: npm install -D playwright-bdd
-            displayName: Install playwright-bdd
-  - stage: Test
-    displayName: Run Tests
-    jobs:
-      - job: Run_Tests
-        steps:
-          - task: Cache@2
-            inputs:
-              key: npm | $(Agent.OS) | $(Build.BuildId) | package-lock.json
-              path: $(NPM_CACHE_FOLDER)
-              restoreKeys: |
-                npm | $(Agent.OS) | $(Build.BuildId)
-          - script: npm run test
-            displayName: Run Playwright Tests
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFiles: playwright-report/*.xml
-              testRunTitle: Playwright Tests
+jobs:
+  - job: Build_and_Test
+    displayName: Build and Test
+    steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: current
+          targetPath: $(Pipeline.Workspace)
+      - task: NodeTool@0
+        inputs:
+          versionSpec: 18.x
+        displayName: Install Node.js
+      - script: npm ci
+        displayName: Install npm packages
+      - script: npx playwright install --with-deps
+        displayName: Install Playwright Browsers
+      - script: npm install -D playwright-bdd
+        displayName: Install playwright-bdd
+      - script: npm run test
+        displayName: Run Playwright Tests
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFiles: playwright-report/*.xml
+          testRunTitle: Playwright Tests
+      - script: npm run report
+        displayName: Generate Cucumber Report
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: cucumber-report
+          artifact: cucumber-report
+        displayName: Publish Cucumber Report
