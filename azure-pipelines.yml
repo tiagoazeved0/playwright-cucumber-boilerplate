@@ -21,7 +21,7 @@ jobs:
         continueOnError: 'true'
       - script: ls -l $(Pipeline.Workspace)
         displayName: List Workspace Files
-      - script: ls -l $(Pipeline.Workspace)/TestResults
+      - script: ls -l $(Pipeline.Workspace)/s
         displayName: List TestResults Files
       - task: PublishTestResults@2
         inputs:
