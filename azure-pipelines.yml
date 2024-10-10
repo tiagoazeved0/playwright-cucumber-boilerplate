@@ -1,73 +1,43 @@
 trigger:
-  - main  # Trigger the pipeline on pushes to the main branch
-
+  - main
 pool:
-  vmImage: 'ubuntu-latest'
-
+  vmImage: ubuntu-latest
 stages:
   - stage: Install_and_Build
-    displayName: 'Install Dependencies and Build'
+    displayName: Install Dependencies and Build
     jobs:
       - job: Install
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: '18.x' 
-            displayName: 'Install Node.js'
-
-          - task: Cache@2  # Cache node_modules
+              versionSpec: 18.x
+            displayName: Install Node.js
+          - script: npm ci
+            displayName: Install npm packages
+          - task: Cache@2
             inputs:
-              key: 'npm | $(Agent.OS) | $(Build.BuildId) | package-lock.json'
+              key: npm | $(Agent.OS) | $(Build.BuildId) | package-lock.json
               path: $(NPM_CACHE_FOLDER)
               restoreKeys: |
                 npm | $(Agent.OS) | $(Build.BuildId)
-
-          - script: npm ci
-            displayName: 'Install npm packages'
-
           - script: npx playwright install --with-deps
-            displayName: 'Install Playwright Browsers'
-
+            displayName: Install Playwright Browsers
           - script: npm install -D playwright-bdd
-            displayName: 'Install playwright-bdd' 
-
+            displayName: Install playwright-bdd
   - stage: Test
-    displayName: 'Run Tests'
+    displayName: Run Tests
     jobs:
       - job: Run_Tests
         steps:
-          - task: Cache@2  # Restore the cache
+          - task: Cache@2
             inputs:
-              key: 'npm | $(Agent.OS) | $(Build.BuildId) | package-lock.json'
+              key: npm | $(Agent.OS) | $(Build.BuildId) | package-lock.json
               path: $(NPM_CACHE_FOLDER)
               restoreKeys: |
                 npm | $(Agent.OS) | $(Build.BuildId)
-
           - script: npm run test
-            displayName: 'Run Playwright Tests'
-
+            displayName: Run Playwright Tests
           - task: PublishTestResults@2
             inputs:
-              testResultsFiles: 'playwright-report/*.xml'  
-              testRunTitle: 'Playwright Tests'
-
-  # - stage: Report
-  #   displayName: 'Generate and Publish Report'
-  #   jobs:
-  #     - job: Generate_Report
-  #       steps:
-  #         - task: Cache@2  # Restore the cache (if needed for report generation)
-  #           inputs:
-  #             key: 'npm | $(Agent.OS) | $(Build.BuildId) | package-lock.json'
-  #             path: $(NPM_CACHE_FOLDER)
-  #             restoreKeys: |
-  #               npm | $(Agent.OS) | $(Build.BuildId)
-
-  #         - script: npm run report 
-  #           displayName: 'Generate Cucumber Report'
-            
-  #         - task: PublishBuildArtifacts@1 
-  #           inputs:
-  #             pathtoPublish: 'cucumber-report' 
-  #             artifactName: 'cucumber-report'
-  #           displayName: 'Publish Cucumber Report'
+              testResultsFiles: playwright-report/*.xml
+              testRunTitle: Playwright Tests
