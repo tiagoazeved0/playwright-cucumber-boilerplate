@@ -24,6 +24,8 @@ jobs:
         inputs:
           testResultsFiles: playwright-report/*.xml
           testRunTitle: Playwright Tests
+      - script: pwd
+        displayName: "Print Working Directory"
       - task: PublishPipelineArtifact@1
         inputs:
           targetPath: playwright-report
