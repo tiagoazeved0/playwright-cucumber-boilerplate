@@ -10,7 +10,7 @@ export default defineConfig({
   testDir,
   reporter: [
     cucumberReporter("junit", {
-      outputFile: "cucumber-report/report.xml",
+      outputFile: "playwright-report/report.xml",
       suiteName: "My Suite",
     }),
   ],
