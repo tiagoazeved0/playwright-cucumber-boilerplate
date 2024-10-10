@@ -16,17 +16,13 @@ jobs:
         displayName: Install Playwright Browsers
       - script: npm install -D playwright-bdd
         displayName: Install playwright-bdd
-      - script: >
-          npx playwright test --reporter=junit
-
-          npx playwright show-report playwright-report  # Specify report
-          directory
+      - script: npm run test
         displayName: Run Tests and Show Report
-        continueOnError: "true"
+        continueOnError: 'true'
       - script: ls -l $(Pipeline.Workspace)
         displayName: List Workspace Files
       - script: ls -l $(Pipeline.Workspace)/TestResults
-        displayName: "List TestResults Files"
+        displayName: List TestResults Files
       - task: PublishTestResults@2
         inputs:
           testResultsFiles: $(Pipeline.Workspace)/TestResults/*.xml
