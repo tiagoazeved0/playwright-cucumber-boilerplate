@@ -9,10 +9,8 @@ const testDir = defineBddConfig({
 export default defineConfig({
   testDir,
   reporter: [
-    cucumberReporter("junit", {
-      outputFile: "playwright-report/report.xml",
-      suiteName: "My Suite",
-    }),
+    ['html'],
+    ['junit', { outputFile: 'playwright-report/results.xml' }]
   ],
   use: {
     screenshot: "on",

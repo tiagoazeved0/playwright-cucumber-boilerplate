@@ -25,10 +25,10 @@ jobs:
         displayName: List TestResults Files
       - task: PublishTestResults@2
         inputs:
-          testResultsFiles: $(Pipeline.Workspace)/TestResults/*.xml
+          testResultsFiles: $(Pipeline.Workspace)/playwright-report/results.xml
           testRunTitle: Playwright Tests
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: playwright-report
+          targetPath: $(Pipeline.Workspace)/playwright-report
           artifact: playwright-report
         displayName: Publish Playwright Report
