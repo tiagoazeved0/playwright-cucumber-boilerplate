@@ -15,6 +15,13 @@ stages:
               versionSpec: '18.x' 
             displayName: 'Install Node.js'
 
+          - task: Cache@2  # Cache node_modules
+            inputs:
+              key: 'npm | $(Agent.OS) | $(Build.BuildId) | package-lock.json'
+              path: $(NPM_CACHE_FOLDER)
+              restoreKeys: |
+                npm | $(Agent.OS) | $(Build.BuildId)
+
           - script: npm ci
             displayName: 'Install npm packages'
 
@@ -22,19 +29,26 @@ stages:
             displayName: 'Install Playwright Browsers'
 
           - script: npm install -D playwright-bdd
-            displayName: 'Install playwright-bdd'
+            displayName: 'Install playwright-bdd' 
 
   - stage: Test
     displayName: 'Run Tests'
     jobs:
       - job: Run_Tests
         steps:
+          - task: Cache@2  # Restore the cache
+            inputs:
+              key: 'npm | $(Agent.OS) | $(Build.BuildId) | package-lock.json'
+              path: $(NPM_CACHE_FOLDER)
+              restoreKeys: |
+                npm | $(Agent.OS) | $(Build.BuildId)
+
           - script: npm run test
             displayName: 'Run Playwright Tests'
 
           - task: PublishTestResults@2
             inputs:
-              testResultsFiles: 'playwright-report/*.xml'
+              testResultsFiles: 'playwright-report/*.xml'  
               testRunTitle: 'Playwright Tests'
 
   # - stage: Report
@@ -42,6 +56,13 @@ stages:
   #   jobs:
   #     - job: Generate_Report
   #       steps:
+  #         - task: Cache@2  # Restore the cache (if needed for report generation)
+  #           inputs:
+  #             key: 'npm | $(Agent.OS) | $(Build.BuildId) | package-lock.json'
+  #             path: $(NPM_CACHE_FOLDER)
+  #             restoreKeys: |
+  #               npm | $(Agent.OS) | $(Build.BuildId)
+
   #         - script: npm run report 
   #           displayName: 'Generate Cucumber Report'
             
@@ -49,4 +70,4 @@ stages:
   #           inputs:
   #             pathtoPublish: 'cucumber-report' 
   #             artifactName: 'cucumber-report'
-  # d     isplayName: 'Publish Cucumber Report'
+  #           displayName: 'Publish Cucumber Report'
