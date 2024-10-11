@@ -19,10 +19,6 @@ jobs:
       - script: npm run test
         displayName: Run Tests and Show Report
         continueOnError: 'true'
-      - script: ls -l $(Pipeline.Workspace)
-        displayName: List Workspace Files
-      - script: ls -l $(Pipeline.Workspace)/s
-        displayName: List TestResults Files
       - task: PublishTestResults@2
         inputs:
           testResultsFiles: $(Pipeline.Workspace)/s/playwright-report/results.xml
